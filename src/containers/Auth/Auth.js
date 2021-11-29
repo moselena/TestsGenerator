@@ -1,15 +1,20 @@
-import React, {Component} from 'react'
+import React, { useState } from 'react'
 import classes from './Auth.module.css'
 import Button from '../../components/UI/Button/Button'
 import Input from '../../components/UI/Input/Input'
 import is from 'is_js'
 import { auth } from '../../store/actions/auth'
-import { connect } from 'react-redux'
-import { withRouter } from '../../hoc/withRouter'
+// import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
-class Auth extends Component {
+export const Auth = () => {
 
-  state = {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const dispatchAuth = (email, password, isLogin) => dispatch(auth(email, password, isLogin))
+
+  const [formState, setFormState] = useState({
     isFormValid: false,
     formControls: {
       email: {
@@ -37,30 +42,30 @@ class Auth extends Component {
         }
       }
     }
-  }
+  })
 
-  loginHandler = () => {
-    this.props.auth(
-      this.state.formControls.email.value,
-      this.state.formControls.password.value,
+  const loginHandler = () => {
+    dispatchAuth(
+      formState.formControls.email.value,
+      formState.formControls.password.value,
       true
     )
-    this.props.navigate('/');
+    navigate('/');
   }
 
-  registerHandler = () => {
-    this.props.auth(
-      this.state.formControls.email.value,
-      this.state.formControls.password.value,
+  const registerHandler = () => {
+    dispatchAuth(
+      formState.formControls.email.value,
+      formState.formControls.password.value,
       false
     )
   }
 
-  submitHandler = event => {
+  const submitHandler = event => {
     event.preventDefault()
   }
 
-  validateControl(value, validation) {
+  const validateControl = (value, validation) => {
     if (!validation) {
       return true
     }
@@ -82,13 +87,13 @@ class Auth extends Component {
     return isValid
   }
 
-  onChangeHandler = (event, controlName) => {
-    const formControls = { ...this.state.formControls }
+  const onChangeHandler = (event, controlName) => {
+    const formControls = { ...formState.formControls }
     const control = { ...formControls[controlName] }
 
     control.value = event.target.value
     control.touched = true
-    control.valid = this.validateControl(control.value, control.validation)
+    control.valid = validateControl(control.value, control.validation)
 
     formControls[controlName] = control
 
@@ -98,14 +103,12 @@ class Auth extends Component {
       isFormValid = formControls[name].valid && isFormValid
     })
 
-    this.setState({
-      formControls, isFormValid
-    })
+    setFormState({formControls, isFormValid})
   }
 
-  renderInputs() {
-    return Object.keys(this.state.formControls).map((controlName, index) => {
-      const control = this.state.formControls[controlName]
+  const renderInputs = () => {
+    return Object.keys(formState.formControls).map((controlName, index) => {
+      const control = formState.formControls[controlName]
       return (
         <Input
           key={controlName + index}
@@ -116,48 +119,46 @@ class Auth extends Component {
           label={control.label}
           shouldValidate={!!control.validation}
           errorMessage={control.errorMessage}
-          onChange={event => this.onChangeHandler(event, controlName)}
+          onChange={event => onChangeHandler(event, controlName)}
         />
       )
     })
   }
 
-  render() {
-    return (
-      <div className={classes.Auth}>
-        <div>
-          <h1>Авторизация</h1>
+  return (
+    <div className={classes.Auth}>
+      <div>
+        <h1>Авторизация</h1>
 
-          <form onSubmit={this.submitHandler} className={classes.AuthForm}>
+        <form onSubmit={submitHandler} className={classes.AuthForm}>
 
-            { this.renderInputs() }
+          { renderInputs() }
 
-            <Button
-              type="success"
-              onClick={this.loginHandler}
-              disabled={!this.state.isFormValid}
-            >
-              Войти
-            </Button>
+          <Button
+            type="success"
+            onClick={loginHandler}
+            disabled={!formState.isFormValid}
+          >
+            Войти
+          </Button>
 
-            <Button
-              type="primary"
-              onClick={this.registerHandler}
-              disabled={!this.state.isFormValid}
-            >
-              Зарегистрироваться
-            </Button>
-          </form>
-        </div>
+          <Button
+            type="primary"
+            onClick={registerHandler}
+            disabled={!formState.isFormValid}
+          >
+            Зарегистрироваться
+          </Button>
+        </form>
       </div>
-    )
-  }
+    </div>
+  )
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    auth: (email, password, isLogin) => dispatch(auth(email, password, isLogin))
-  }
-}
+// function mapDispatchToProps(dispatch) {
+//   return {
+//     auth: (email, password, isLogin) => dispatch(auth(email, password, isLogin))
+//   }
+// }
 
-export default connect(null, mapDispatchToProps)(withRouter(Auth))
+// export default connect(null, mapDispatchToProps)(Auth)

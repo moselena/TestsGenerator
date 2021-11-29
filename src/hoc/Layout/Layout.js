@@ -1,54 +1,49 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import classes from './Layout.module.css'
 import MenuToggle from '../../components/Navigation/MenuToggle/MenuToggle'
 import Drawer from '../../components/Navigation/Drawer/Drawer'
-import { connect } from 'react-redux'
+// import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 
-class Layout extends Component {
+export const Layout = ({ children }) => {
 
-  state = {
-    menu: false
+  const [menu, setMenu] = useState(false)
+
+  const toggleMenuHandler = () => {
+    setMenu(!menu)
   }
 
-  toggleMenuHandler = () => {
-    this.setState({
-      menu: !this.state.menu
-    })
+  const menuCloseHandler = () => {
+    setMenu(false)
   }
 
-  menuCloseHandler = () => {
-    this.setState({
-      menu: false
-    })
-  }
+  const isAuthenticated = useSelector((state) => !!state.auth.token)
 
-  render() {
-    return (
-      <div className={classes.Layout}>
+  return (
+    <div className={classes.Layout}>
 
-        <Drawer
-          isOpen={this.state.menu}
-          onClose={this.menuCloseHandler}
-          isAuthenticated={this.props.isAuthenticated}
-        />
+      <Drawer
+        isOpen={menu}
+        onClose={menuCloseHandler}
+        isAuthenticated={isAuthenticated}
+      />
 
-        <MenuToggle
-          onToggle={this.toggleMenuHandler}
-          isOpen={this.state.menu}
-        />
+      <MenuToggle
+        onToggle={toggleMenuHandler}
+        isOpen={menu}
+      />
 
-        <main>
-          { this.props.children }
-        </main>
-      </div>
-    )
-  }
+      <main>
+        { children }
+      </main>
+    </div>
+  )
 }
 
-function mapStateToProps(state) {
-  return {
-    isAuthenticated: !!state.auth.token
-  }
-}
+// function mapStateToProps(state) {
+//   return {
+//     isAuthenticated: !!state.auth.token
+//   }
+// }
 
-export default connect(mapStateToProps)(Layout)
+// export default connect(mapStateToProps)(Layout)

@@ -1,18 +1,18 @@
 import React from 'react'
 import classes from './Select.module.css'
 
-const Select = props => {
-  const htmlFor = `${props.label}-${Math.random()}`
+const Select = ({label, value, options, onChange }) => {
+  const htmlFor = `${label}-${Math.random()}`
 
   return (
     <div className={classes.Select}>
-      <label htmlFor={htmlFor}>{props.label}</label>
+      <label htmlFor={htmlFor}>{label}</label>
       <select
         id={htmlFor}
-        value={props.value}
-        onChange={props.onChange}
+        value={value}
+        onChange={onChange}
       >
-        { props.options.map((option, index) => {
+        { options.map((option, index) => {
           return (
             <option
               value={option.value}

@@ -1,68 +1,77 @@
-import React, { Component } from 'react'
+import React, { useEffect } from 'react'
 import classes from './Quiz.module.css'
 import ActiveQuiz from '../../components/ActiveQuiz/ActiveQuiz'
 import FinishedQuiz from '../../components/FinishedQuiz/FinishedQuiz'
 import Loader from '../../components/UI/Loader/Loader'
-import { withRouter } from '../../hoc/withRouter'
-import { connect } from 'react-redux'
+import { useParams } from 'react-router-dom'
+// import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { fetchQuizById, quizAnswerClick, retryQuiz } from '../../store/actions/quiz'
 
-class Quiz extends Component {
+export const Quiz = () => {
 
-  componentDidMount() {
-    this.props.fetchQuizById(this.props.params.id)
-  }
+  const { id } = useParams()
 
-  componentWillUnmount() {
-    this.props.retryQuiz()
-  }
+  const quizState = useSelector((state) => state.quiz)
+  const { results, isFinished, activeQuestion, answerState, quiz, loading } = quizState
 
-  render() {
-    return (
-      <div className={classes.Quiz}>
-        <div className={classes.QuizWrapper}>
-          <h1>Answer all questions</h1>
-          {
-            this.props.loading || !this.props.quiz
-            ? <Loader />
-            : this.props.isFinished
-               ? <FinishedQuiz
-                    results={this.props.results}
-                    quiz={this.props.quiz}
-                    onRetry={this.props.retryQuiz}
-                  />
-               : <ActiveQuiz
-                  answers={this.props.quiz[this.props.activeQuestion].answers}
-                  question={this.props.quiz[this.props.activeQuestion].question}
-                  onAnswerClick={this.props.quizAnswerClick}
-                  quizLength={this.props.quiz.length}
-                  answerNumber={this.props.activeQuestion + 1}
-                  state={this.props.answerState}
+  const dispatch = useDispatch()
+  const dispatchFetchQuizById = (id) => dispatch(fetchQuizById(id))
+  const dispatchQuizAnswerClick = (answerId) => dispatch(quizAnswerClick(answerId))
+  const dispatchRetryQuiz = () => dispatch(retryQuiz())
+
+  useEffect(() => {
+    dispatchFetchQuizById(id)
+  }, [id])
+
+  useEffect(() => {
+    return () => dispatchRetryQuiz()
+  }, [])
+
+  return (
+    <div className={classes.Quiz}>
+      <div className={classes.QuizWrapper}>
+        <h1>Answer all questions</h1>
+        {
+          loading || !quiz
+          ? <Loader />
+          : isFinished
+              ? <FinishedQuiz
+                  results={results}
+                  quiz={quiz}
+                  onRetry={dispatchRetryQuiz}
                 />
-          }
-        </div>
+              : <ActiveQuiz
+                answers={quiz[activeQuestion].answers}
+                question={quiz[activeQuestion].question}
+                onAnswerClick={dispatchQuizAnswerClick}
+                quizLength={quiz.length}
+                answerNumber={activeQuestion + 1}
+                state={answerState}
+              />
+        }
       </div>
-    )
-  }
+    </div>
+  )
 }
 
-function mapStateToProps(state) {
-  return {
-    results: state.quiz.results, 
-    isFinished: state.quiz.isFinished,
-    activeQuestion: state.quiz.activeQuestion,
-    answerState: state.quiz.answerState,
-    quiz: state.quiz.quiz,
-    loading: state.quiz.loading
-  }
-}
+// function mapStateToProps(state) {
+//   return {
+//     results: state.quiz.results, 
+//     isFinished: state.quiz.isFinished,
+//     activeQuestion: state.quiz.activeQuestion,
+//     answerState: state.quiz.answerState,
+//     quiz: state.quiz.quiz,
+//     loading: state.quiz.loading
+//   }
+// }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    fetchQuizById: id => dispatch(fetchQuizById(id)),
-    quizAnswerClick: answerId => dispatch(quizAnswerClick(answerId)),
-    retryQuiz: () => dispatch(retryQuiz())
-  }
-}
+// function mapDispatchToProps(dispatch) {
+//   return {
+//     fetchQuizById: id => dispatch(fetchQuizById(id)),
+//     quizAnswerClick: answerId => dispatch(quizAnswerClick(answerId)),
+//     retryQuiz: () => dispatch(retryQuiz())
+//   }
+// }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Quiz))
+// export default connect(mapStateToProps, mapDispatchToProps)(Quiz)
