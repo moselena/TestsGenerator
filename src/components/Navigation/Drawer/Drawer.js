@@ -1,17 +1,47 @@
 import React from 'react'
-import classes from './Drawer.module.css'
+import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import Backdrop from '../../UI/Backdrop/Backdrop'
 import { useDispatch } from 'react-redux'
 import { logout } from '../../../store/actions/auth'
 
+const BaseDrawer = styled.nav`
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 80%;
+  max-width: 300px;
+  padding: 20px 10px;
+  box-sizing: border-box;
+  background: #fff;
+  transition: transform .22s ease-in;
+  z-index: 90;
+  transform: ${({isOpen}) => isOpen ? `translateX(0px)` : `translateX(-300px);`};
+`
+const Ul = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+`
+const Li = styled.li`
+  margin-bottom: 15px;
+`
+const MenuItem = styled(Link)`
+  color: #363d54;
+  font-size: 30px;
+  text-decoration: none;
+  background-color: #fff;
+  position: relative;
+  padding: 0 20px 10px 20px;
+  transition: opacity .3s;
+  &:hover, &:active {
+    opacity: .7;
+  }
+`
+
 const Drawer = ({ isOpen, isAuthenticated, onClose }) => {
   const dispatch = useDispatch();
-  const cls = [classes.Drawer]
-
-  if (!isOpen) {
-    cls.push(classes.close)
-  }
 
   const links = [
     {to: '/', label: 'Список'}
@@ -33,26 +63,25 @@ const Drawer = ({ isOpen, isAuthenticated, onClose }) => {
     return links.map((link, index) => {
       const handler = link.handler || onClose;
       return (
-        <li key={index}>
-          <Link
+        <Li key={index}>
+          <MenuItem
             to={link.to}
-            activeclassname={classes.active}
             onClick={handler}
           >
             {link.label}
-          </Link>
-        </li>
+          </MenuItem>
+        </Li>
       )
     })
   }
 
   return (
     <>
-      <nav className={cls.join(' ')}>
-        <ul>
+      <BaseDrawer isOpen={isOpen}>
+        <Ul>
           { renderLinks(links) }
-        </ul>
-      </nav>
+        </Ul>
+      </BaseDrawer>
       { isOpen ? <Backdrop onClick={onClose} /> : null }
     </>
   )

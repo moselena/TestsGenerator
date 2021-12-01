@@ -1,13 +1,35 @@
 import React, { useState } from 'react'
-import classes from './QuizCreator.module.css'
+import styled from 'styled-components'
 import Button from '../../components/UI/Button/Button'
 import Input from '../../components/UI/Input/Input'
 import Select from '../../components/UI/Select/Select'
-import {createControl, validate, validateForm} from '../../form/formFramework'
+import { createControl, validate, validateForm } from '../../form/formFramework'
 import { Auxiliary } from '../../hoc/Auxiliary/Auxiliary'
-// import { connect } from 'react-redux'
 import { useDispatch, useSelector } from 'react-redux'
 import { createQuizQuestion, finishCreateQuiz } from '../../store/actions/create'
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  flex-grow: 1;
+  width: 100%;
+  background: linear-gradient(270deg, #f0613c 0%, #f0783c 100%);
+  & > div {
+    width: 100%;
+    max-width: 600px;
+    padding: 0 20px;
+  }
+`
+const Heading = styled.h1`
+  text-align: center;
+`
+const Form = styled.form`
+  background: #eee;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, .5);
+`
 
 function createOptionControl(number) {
   return createControl({
@@ -97,15 +119,15 @@ export const QuizCreator = () => {
     formControls[controlName] = control
 
     setFormState({
+      ...formState,
       formControls,
       isFormValid: validateForm(formControls)
     })
   }
 
-  const renderControls = () =>{
+  const renderControls = () => {
     return Object.keys(formState.formControls).map((controlName, index) => {
       const control = formState.formControls[controlName]
-
       return (
         <Auxiliary key={controlName + index}>
           <Input
@@ -125,28 +147,29 @@ export const QuizCreator = () => {
 
   const selectChangeHandler = event => {
     setFormState({
+      ...formState,
       rightAnswerId: +event.target.value
     })
   }
 
-    const select = <Select
-      label="Выберите правильный ответ"
-      value={formState.rightAnswerId}
-      onChange={selectChangeHandler}
-      options={[
-        {text: 1, value: 1},
-        {text: 2, value: 2},
-        {text: 3, value: 3},
-        {text: 4, value: 4}
-      ]}
-    />
+  const select = <Select
+    label="Выберите правильный ответ"
+    value={formState.rightAnswerId}
+    onChange={selectChangeHandler}
+    options={[
+      {text: 1, value: 1},
+      {text: 2, value: 2},
+      {text: 3, value: 3},
+      {text: 4, value: 4}
+    ]}
+  />
 
   return (
-    <div className={classes.QuizCreator}>
+    <Container>
       <div>
-        <h1>Создание теста</h1>
+        <Heading>Создание теста</Heading>
 
-        <form onSubmit={submitHandler}>
+        <Form onSubmit={submitHandler}>
 
           { renderControls() }
 
@@ -168,23 +191,8 @@ export const QuizCreator = () => {
             Создать тест
           </Button>
 
-        </form>
+        </Form>
       </div>
-    </div>
+    </Container>
   )
 }
-
-// function mapStateToProps(state) {
-//   return {
-//     quiz: state.create.quiz 
-//   }
-// }
-
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     createQuizQuestion: item => dispatch(createQuizQuestion(item)),
-//     finishCreateQuiz: () => dispatch(finishCreateQuiz())
-//   }
-// }
-
-// export default connect(mapStateToProps, mapDispatchToProps)(QuizCreator)

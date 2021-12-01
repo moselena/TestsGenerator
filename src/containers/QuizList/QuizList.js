@@ -1,10 +1,36 @@
 import React, { useEffect }from 'react'
-import classes from './QuizList.module.css'
+import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import Loader from '../../components/UI/Loader/Loader'
-// import { connect } from 'react-redux'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchQuizes } from '../../store/actions/quiz'
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 100px;
+  flex-grow: 1;
+  width: 100%;
+  background: linear-gradient(90deg, #fd8355 0%, #f0576c 37%, #f79cbd 100%);
+`
+const Heading = styled.h1`
+  color: #fff;
+`
+const List = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+`
+const ListItem = styled.li`
+  margin-bottom: 10px;
+`
+const QuizName = styled(Link)`
+  text-decoration: none;
+  color: #fff;
+  &:hover {
+    color: #363f54;
+  }
+`
 
 export const QuizList = () => {
   const dispatch = useDispatch()
@@ -16,13 +42,13 @@ export const QuizList = () => {
   const renderQuizes = quizes => {
     return quizes.map(quiz => {
       return (
-        <li
+        <ListItem
           key={quiz.id}
         >
-          <Link to={'/quiz/' + quiz.id}>
+          <QuizName to={'/quiz/' + quiz.id}>
             {quiz.name}
-          </Link>
-        </li>
+          </QuizName>
+        </ListItem>
       )
     })
   }
@@ -32,31 +58,17 @@ export const QuizList = () => {
   }, [])
 
   return (
-    <div className={classes.QuizList}>
+    <Container>
       <div>
-        <h1>Список тестов</h1>
+        <Heading>Список тестов</Heading>
         {
           loading && quizes.length !== 0
           ? <Loader />
-          : <ul>
+          : <List>
               { renderQuizes(quizes) }
-            </ul>
+            </List>
         }
       </div>
-    </div>
+    </Container>
   )
 }
-
-// function mapStateToProps(state) {
-//   return { 
-//     quizes: state.quiz.quizes,
-//     loading: state.quiz.loading
-//   }
-// }
-// function mapDispatchToProps(dispatch) {
-//   return { 
-//     fetchQuizes: ()=>dispatch(fetchQuizes())
-//   }
-// }
-
-// export default connect(mapStateToProps, mapDispatchToProps)(QuizList) 

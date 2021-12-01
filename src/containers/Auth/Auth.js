@@ -1,12 +1,35 @@
 import React, { useState } from 'react'
-import classes from './Auth.module.css'
+import styled from 'styled-components'
 import Button from '../../components/UI/Button/Button'
 import Input from '../../components/UI/Input/Input'
 import is from 'is_js'
 import { auth } from '../../store/actions/auth'
-// import { connect } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 100px;
+  flex-grow: 1;
+  width: 100%;
+  background: linear-gradient(270deg, #cef2fa 0%, #59bfef 100%);
+  & > div {
+    width: 100%;
+    max-width: 600px;
+    padding: 0 20px;
+  }
+`
+const Heading = styled.h1`
+  color: #fff;
+  text-align: center;
+`
+const AuthForm = styled.form`
+  background: #eee;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, .5);
+  padding: 15px;
+  border-radius: 5px;
+`
 
 export const Auth = () => {
 
@@ -126,11 +149,11 @@ export const Auth = () => {
   }
 
   return (
-    <div className={classes.Auth}>
+    <Container>
       <div>
-        <h1>Авторизация</h1>
+        <Heading>Авторизация</Heading>
 
-        <form onSubmit={submitHandler} className={classes.AuthForm}>
+        <AuthForm onSubmit={submitHandler}>
 
           { renderInputs() }
 
@@ -149,16 +172,8 @@ export const Auth = () => {
           >
             Зарегистрироваться
           </Button>
-        </form>
+        </AuthForm>
       </div>
-    </div>
+    </Container>
   )
 }
-
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     auth: (email, password, isLogin) => dispatch(auth(email, password, isLogin))
-//   }
-// }
-
-// export default connect(null, mapDispatchToProps)(Auth)

@@ -1,9 +1,19 @@
 import React, { useState } from 'react'
-import classes from './Layout.module.css'
+import styled from 'styled-components'
 import MenuToggle from '../../components/Navigation/MenuToggle/MenuToggle'
 import Drawer from '../../components/Navigation/Drawer/Drawer'
-// import { connect } from 'react-redux'
 import { useSelector } from 'react-redux'
+
+const BaseLayout = styled.div`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+`
+const Main = styled.main`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+`
 
 export const Layout = ({ children }) => {
 
@@ -20,7 +30,7 @@ export const Layout = ({ children }) => {
   const isAuthenticated = useSelector((state) => !!state.auth.token)
 
   return (
-    <div className={classes.Layout}>
+    <BaseLayout>
 
       <Drawer
         isOpen={menu}
@@ -33,17 +43,10 @@ export const Layout = ({ children }) => {
         isOpen={menu}
       />
 
-      <main>
+      <Main>
         { children }
-      </main>
-    </div>
+      </Main>
+      
+    </BaseLayout>
   )
 }
-
-// function mapStateToProps(state) {
-//   return {
-//     isAuthenticated: !!state.auth.token
-//   }
-// }
-
-// export default connect(mapStateToProps)(Layout)

@@ -1,10 +1,16 @@
 import React from 'react'
-import classes from './AnswersList.module.css'
+import styled from 'styled-components'
 import AnswerItem from './AnswerItem/AnswerItem'
+
+const List = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+`
 
 const AnswersList = ({answers, onAnswerClick, state}) => {
   return (
-    <ul className={classes.AnswersList}>
+    <List>
       { answers.map((answer, index) => {
         return (
           <AnswerItem
@@ -15,7 +21,7 @@ const AnswersList = ({answers, onAnswerClick, state}) => {
           />
         )
       }) }
-    </ul>
+    </List>
   )
 }
 

@@ -1,36 +1,63 @@
 import React from 'react'
-import classes from './Input.module.css'
+import styled from 'styled-components'
+
+const Container = styled.div`
+  margin-bottom: 15px;
+`
+const Label = styled.label`
+    margin-bottom: 3px;
+    padding: 0;
+    display: block;
+    font-weight: bold;
+    color: ${props => isInvalid(props) ? `#f01f30` : `#000`};
+`
+const BaseInput = styled.input`
+    display: block;
+    box-sizing: border-box;
+    border: 1px solid #bebebe;
+    padding: 7px;
+    margin: 0 0 5px;
+    width: 100%;
+    outline: none;
+    transition: all 300ms ease-in-out;
+`
+const ErrorMessage = styled.span` 
+    color: #f01f30;
+    font-size: 12px;
+    font-weight: bold;
+`
 
 function isInvalid({valid, touched, shouldValidate}) {
   return !valid && shouldValidate && touched
 }
 
 const Input = props => {
-  const { type, label, value, onChange, errorMessage } = props
+  const { type, label, value, onChange, errorMessage, valid, touched, shouldValidate } = props
   const inputType = type || 'text'
-  const cls = [classes.Input]
   const htmlFor = `${inputType}-${Math.random()}`
 
-  if (isInvalid(props)) {
-    cls.push(classes.invalid)
-  }
-
   return (
-    <div className={cls.join(' ')}>
-      <label htmlFor={htmlFor}>{label}</label>
-      <input
-        type={inputType}
-        id={htmlFor}
-        value={value}
-        onChange={onChange}
-      />
+    <Container>
+      <Label 
+        valid={valid}
+        touched={touched}
+        shouldValidate={shouldValidate}
+        htmlFor={htmlFor}>
+          {label}
+      </Label>
+        <BaseInput
+          type={inputType}
+          id={htmlFor}
+          value={value}
+          onChange={onChange}
+        />
 
       {
         isInvalid(errorMessage)
-          ? <span>{errorMessage || 'Введите верное значение'}</span>
+          ? <ErrorMessage>{errorMessage || 'Введите верное значение'}</ErrorMessage>
           : null
       }
-    </div>
+    </Container>
   )
 }
 

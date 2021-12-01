@@ -1,13 +1,33 @@
 import React from 'react'
-import classes from './Select.module.css'
+import styled from 'styled-components'
+
+const Container = styled.div`
+  margin-bottom: 15px;
+`
+const Label = styled.label`
+    margin: 0 0 3px 0;
+    padding: 0;
+    font-weight: bold;
+    display: block;
+`
+const BaseSelect = styled.select`
+    display: block;
+    box-sizing: border-box;
+    border: 1px solid #bebebe;
+    margin: 0 0 5px;
+    height: 29px;
+    width: 100%;
+    outline: none;
+    transition: all 300ms ease-in-out;
+`
 
 const Select = ({label, value, options, onChange }) => {
   const htmlFor = `${label}-${Math.random()}`
 
   return (
-    <div className={classes.Select}>
-      <label htmlFor={htmlFor}>{label}</label>
-      <select
+    <Container>
+      <Label htmlFor={htmlFor}>{label}</Label>
+      <BaseSelect
         id={htmlFor}
         value={value}
         onChange={onChange}
@@ -22,8 +42,8 @@ const Select = ({label, value, options, onChange }) => {
             </option>
           )
         }) }
-      </select>
-    </div>
+      </BaseSelect>
+    </Container>
   )
 }
 

@@ -26,7 +26,7 @@ export default function quizReducer(state = initialState, action) {
             }
         case FETCH_QUIZES_SUCCESS: 
             return {
-                ...state, loading: false, quizes:action.quizes
+                ...state, loading: false, quizes: action.quizes
             }
         case FETCH_QUIZES_ERROR: 
             return {

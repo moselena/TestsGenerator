@@ -1,25 +1,38 @@
 import React from 'react'
-import classes from './ActiveQuiz.module.css'
+import styled from 'styled-components'
 import AnswersList from './AnswersList/AnswersList'
+
+const Quiz = styled.div`
+  padding: 20px;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 5px;
+  margin: 0 10px;
+  box-sizing: border-box;
+`
+const Question = styled.p`
+  display: flex;
+  justify-content: space-between;
+`
 
 const ActiveQuiz = ({answerNumber, question, quizLength, state, answers, onAnswerClick}) => {
   return (
-    <div className={classes.ActiveQuiz}>
-      <p className={classes.Question}>
-      <span>
-        <strong>{answerNumber}.</strong>&nbsp;
-        {question}
-      </span>
+    <Quiz>
+      <Question>
+        <span>
+          <strong>{answerNumber}.</strong>&nbsp;
+          {question}
+        </span>
 
         <small>{answerNumber} из {quizLength}</small>
-      </p>
+      </Question>
 
       <AnswersList
         state={state}
         answers={answers}
         onAnswerClick={onAnswerClick}
       />
-    </div>
+    </Quiz>
   )
 }
 
